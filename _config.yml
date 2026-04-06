@@ -39,7 +39,7 @@ additional_links:
 # About Section
 about_profile_image: images/profile.jpg
 about_content: | # this will include new lines to allow paragraphs
-  Hi, my name's Phuc and I'm a Developer Intern passionate about building clean, efficient software.
+  Hi, my name's Phuc and I'm a Developer passionate about building clean, efficient software.
   I'm actively looking to apply my academic knowledge in a real-world development environment.
   I enjoy solving challenging problems, learning new technologies, and contributing to collaborative engineering teams.
 
