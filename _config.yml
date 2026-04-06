@@ -46,6 +46,21 @@ about_content: | # this will include new lines to allow paragraphs
   I am most skilled in: <mark>Node.js/Express</mark>, <mark>Flutter</mark>, <mark>.NET</mark>, and <mark>PostgreSQL</mark>
 
 content:
+  - title: Skills
+    layout: text
+    content: |
+      **Programming Languages:** Java, JavaScript, C#, Dart
+
+      **Web Development:** HTML/CSS, Node.js/Express, REST APIs, MVC
+
+      **Mobile/Cross-platform:** Flutter
+
+      **Database:** PostgreSQL, MongoDB, MySQL
+
+      **Tools & Platforms:** Git, GitHub, VS Code, Docker (basic)
+
+      **Methodologies:** OOP, MVC Pattern
+
   - title: Projects
     layout: list
     content:
@@ -94,21 +109,6 @@ content:
           The system includes a database-driven backend with dynamic template rendering and an admin interface
           for content management. Developed May 2025.
 
-  - title: Experience
-    layout: list
-    content:
-      - layout: left
-        title: Expertise
-        sub_title: Full-Stack Development
-        caption: 2022 - Present
-        quote: >
-          Designing and building full-stack web applications and RESTful APIs from the ground up.
-        description: |
-          - Full-stack web application development
-          - Designing and implementing RESTful APIs with authentication and OTP verification
-          - Database schema design and management with <mark>PostgreSQL</mark>
-          - Building cross-platform frontends using <mark>Flutter</mark>
-
   - title: Education
     layout: list
     content:
@@ -123,20 +123,19 @@ content:
 
           **GPA: 3.4 / 4.0**
 
-  - title: Skills
-    layout: text
-    content: |
-      **Programming Languages:** Java, JavaScript, C#, Dart
-
-      **Web Development:** HTML/CSS, Node.js/Express, REST APIs, MVC
-
-      **Mobile/Cross-platform:** Flutter
-
-      **Database:** PostgreSQL, MongoDB, MySQL
-
-      **Tools & Platforms:** Git, GitHub, VS Code, Docker (basic)
-
-      **Methodologies:** OOP, MVC Pattern
+  - title: Expertise
+    layout: list
+    content:
+      - layout: left
+        title: Full-Stack Development
+        caption: 2022 - Present
+        quote: >
+          Designing and building full-stack web applications and RESTful APIs from the ground up.
+        description: |
+          - Full-stack web application development
+          - Designing and implementing RESTful APIs with authentication and OTP verification
+          - Database schema design and management with <mark>PostgreSQL</mark>
+          - Building cross-platform frontends using <mark>Flutter</mark>
 
   - title: A Little More About Me
     layout: text
