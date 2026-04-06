@@ -29,6 +29,12 @@ additional_links:
 - title: Email Me
   icon: fas fa-envelope
   url: mailto:phucpham2911@outlook.com
+- title: LinkedIn
+  icon: fab fa-linkedin
+  url: https://www.linkedin.com/in/phucpham2911/
+- title: My Resume
+  icon: fas fa-file-pdf
+  url: https://drive.google.com/file/d/1t3E5FSJ8MHUOQikDrOm_XUqNrqeBcy15/view
 
 # About Section
 about_profile_image: images/profile.jpg
