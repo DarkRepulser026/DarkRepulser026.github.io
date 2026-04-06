@@ -12,10 +12,10 @@ email: phucpham2911@outlook.com
 website: github.com/DarkRepulser026
 
 # Dark Mode (true/false/never)
-darkmode: false
+darkmode: true
 
 # Social links
-github_username: DarkRepulser026
+# github_username:
 # twitter_username:
 # instagram_username:
 # linkedin_username:
@@ -26,6 +26,9 @@ additional_links:
 - title: GitHub Profile
   icon: fab fa-github
   url: https://github.com/DarkRepulser026
+- title: Email Me
+  icon: fas fa-envelope
+  url: mailto:phucpham2911@outlook.com
 
 # About Section
 about_profile_image: images/profile.jpg
