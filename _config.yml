@@ -8,8 +8,8 @@ version: 2
 # Personal info
 name: Pham Quy Gia Phuc
 title: Developer Intern
-# email: phucpham2911@outlook.com
-# website: github.com/DarkRepulser026
+email: phucpham2911@outlook.com
+website: github.com/DarkRepulser026
 
 # Dark Mode (true/false/never)
 darkmode: true
