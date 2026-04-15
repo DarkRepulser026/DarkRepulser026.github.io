@@ -11,5 +11,7 @@ pnpm-debug.log*
 .idea/
 teaser.pptx
 ~$teaser.pptx
-.github
+.github/*
+!.github/workflows/
+!.github/workflows/**
 CV.md
