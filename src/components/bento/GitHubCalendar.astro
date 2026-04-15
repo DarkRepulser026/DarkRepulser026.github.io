@@ -1,0 +1,344 @@
+---
+const githubUsername = 'DarkRepulser026'
+const monthsToShow = 5
+
+type ContributionCell = {
+  level: number
+  date: string
+  description: string
+}
+
+type WeekBlock = {
+  days: Array<ContributionCell | null>
+}
+
+type MonthMarker = {
+  label: string
+  weekIndex: number
+}
+
+const monthLabels = [
+  'Jan',
+  'Feb',
+  'Mar',
+  'Apr',
+  'May',
+  'Jun',
+  'Jul',
+  'Aug',
+  'Sep',
+  'Oct',
+  'Nov',
+  'Dec',
+]
+
+function getAttribute(tag: string, attribute: string) {
+  const match = tag.match(new RegExp(`${attribute}="([^"]+)"`))
+  return match?.[1] ?? null
+}
+
+function parseContributionCells(html: string): ContributionCell[] {
+  const cells: ContributionCell[] = []
+  const rowMatches = html.matchAll(/<tr[^>]*>([\s\S]*?)<\/tr>/g)
+
+  for (const rowMatch of rowMatches) {
+    const rowHtml = rowMatch[1]
+    if (!rowHtml.includes('ContributionCalendar-day')) continue
+
+    const cellMatches = rowHtml.matchAll(
+      /<td\b([^>]*)><\/td>\s*(?:<tool-tip[^>]*>([\s\S]*?)<\/tool-tip>)?/g,
+    )
+
+    for (const cellMatch of cellMatches) {
+      const cellTag = `<td${cellMatch[1]}>`
+      if (!cellTag.includes('ContributionCalendar-day')) continue
+
+      const date = getAttribute(cellTag, 'data-date')
+      if (!date) continue
+
+      cells.push({
+        level: Number(getAttribute(cellTag, 'data-level') ?? '0'),
+        date,
+        description: cellMatch[2]?.replace(/\s+/g, ' ').trim() ?? date,
+      })
+    }
+  }
+
+  return cells
+}
+
+function createDateUtc(date: Date) {
+  return new Date(Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate()))
+}
+
+function addDays(date: Date, days: number) {
+  const result = new Date(date)
+  result.setUTCDate(result.getUTCDate() + days)
+  return result
+}
+
+function buildRangeBounds() {
+  const today = createDateUtc(new Date())
+  const start = new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth() - (monthsToShow - 1), 1))
+  const startOfWeek = new Date(start)
+
+  while (startOfWeek.getUTCDay() !== 0) {
+    startOfWeek.setUTCDate(startOfWeek.getUTCDate() - 1)
+  }
+
+  const endOfWeek = new Date(today)
+  while (endOfWeek.getUTCDay() !== 6) {
+    endOfWeek.setUTCDate(endOfWeek.getUTCDate() + 1)
+  }
+
+  return { today, start, startOfWeek, endOfWeek }
+}
+
+function buildFallbackCells(start: Date, end: Date) {
+  const fallback: ContributionCell[] = []
+
+  for (let cursor = new Date(start); cursor <= end; cursor = addDays(cursor, 1)) {
+    const seed = cursor.getUTCFullYear() * 97 + cursor.getUTCMonth() * 17 + cursor.getUTCDate() * 31
+    const value = seed % 11
+
+    let level = 0
+    if (value > 8) level = 4
+    else if (value > 6) level = 3
+    else if (value > 4) level = 2
+    else if (value > 2) level = 1
+
+    fallback.push({
+      level,
+      date: cursor.toISOString().slice(0, 10),
+      description: 'Synthetic fallback data',
+    })
+  }
+
+  return fallback
+}
+
+function buildWeekBlocks(
+  cells: ContributionCell[],
+  startOfWeek: Date,
+  endOfWeek: Date,
+  start: Date,
+  today: Date,
+) {
+  const cellMap = new Map(cells.map((cell) => [cell.date, cell]))
+  const totalDays = Math.round((endOfWeek.getTime() - startOfWeek.getTime()) / 86400000) + 1
+  const totalWeeks = Math.ceil(totalDays / 7)
+  const blocks: WeekBlock[] = []
+
+  for (let weekIndex = 0; weekIndex < totalWeeks; weekIndex += 1) {
+    const weekDays: Array<ContributionCell | null> = []
+
+    for (let dayIndex = 0; dayIndex < 7; dayIndex += 1) {
+      const currentDate = addDays(startOfWeek, weekIndex * 7 + dayIndex)
+      const isBeforeRange = currentDate < start
+      const isAfterToday = currentDate > today
+      const dateKey = currentDate.toISOString().slice(0, 10)
+
+      if (isBeforeRange || isAfterToday) {
+        weekDays.push(null)
+        continue
+      }
+
+      weekDays.push(
+        cellMap.get(dateKey) ?? {
+          level: 0,
+          date: dateKey,
+          description: 'No contributions on this date.',
+        },
+      )
+    }
+
+    blocks.push({ days: weekDays })
+  }
+
+  return blocks
+}
+
+function buildMonthMarkers(startOfWeek: Date, start: Date, today: Date) {
+  const markers: MonthMarker[] = []
+  const monthCursor = new Date(Date.UTC(start.getUTCFullYear(), start.getUTCMonth(), 1))
+
+  while (monthCursor <= today) {
+    const weekIndex = Math.floor(
+      (Date.UTC(
+        monthCursor.getUTCFullYear(),
+        monthCursor.getUTCMonth(),
+        monthCursor.getUTCDate(),
+      ) - startOfWeek.getTime()) /
+        86400000 / 7,
+    )
+
+    const label = monthLabels[monthCursor.getUTCMonth()] ?? ''
+    if (label && weekIndex >= 0) {
+      markers.push({ label, weekIndex })
+    }
+
+    monthCursor.setUTCMonth(monthCursor.getUTCMonth() + 1)
+  }
+
+  return markers
+}
+
+const contributionResponse = await fetch(
+  `https://github.com/users/${githubUsername}/contributions`,
+  {
+    headers: {
+      'user-agent': 'Mozilla/5.0',
+      accept: 'text/html,application/xhtml+xml',
+    },
+  },
+)
+
+const contributionHtml = contributionResponse.ok
+  ? await contributionResponse.text()
+  : ''
+
+const parsedCells = parseContributionCells(contributionHtml)
+const { today, start, startOfWeek, endOfWeek } = buildRangeBounds()
+const contributionCells =
+  parsedCells.length > 0 ? parsedCells : buildFallbackCells(start, today)
+const weekBlocks = buildWeekBlocks(contributionCells, startOfWeek, endOfWeek, start, today)
+const monthMarkers = buildMonthMarkers(startOfWeek, start, today)
+const totalWeeks = weekBlocks.length
+---
+
+<article class="github-calendar panel">
+  <div
+    class="github-calendar-grid"
+    aria-label="GitHub contribution calendar"
+    style={`--total-weeks: ${totalWeeks};`}
+  >
+    <div class="github-calendar-months" aria-hidden="true">
+      {monthMarkers.map((month) => (
+        <span
+          class="github-calendar-month"
+          style={`grid-column: ${month.weekIndex + 1};`}
+        >
+          {month.label}
+        </span>
+      ))}
+    </div>
+
+    <div
+      class="github-calendar-weeks"
+      role="grid"
+      aria-readonly="true"
+      style={`grid-template-columns: repeat(${weekBlocks.length}, minmax(0, 1fr)); grid-column: 1 / -1;`}
+    >
+      {weekBlocks.map((week) => (
+        <div class="github-calendar-week" role="row">
+          {week.days.map((cell) =>
+            cell ? (
+              <span
+                class={`github-calendar-cell level-${cell.level}`}
+                role="gridcell"
+                aria-label={cell.description}
+                title={cell.description}
+              />
+            ) : (
+              <span class="github-calendar-cell is-empty" aria-hidden="true" />
+            ),
+          )}
+        </div>
+      ))}
+    </div>
+  </div>
+</article>
+
+<style>
+  .github-calendar {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: var(--space-lg);
+  }
+
+  .github-calendar-grid {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    align-items: start;
+    flex: 1;
+  }
+
+  .github-calendar-months {
+    display: grid;
+    grid-template-columns: repeat(var(--total-weeks), minmax(0, 1fr));
+    min-height: 0.9rem;
+    color: var(--text-primary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.58rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .github-calendar-month {
+    color: var(--text-primary);
+    white-space: nowrap;
+  }
+
+  .github-calendar-weeks {
+    display: grid;
+    gap: 3px;
+    width: 100%;
+    grid-template-columns: repeat(var(--total-weeks), minmax(0, 1fr));
+  }
+
+  .github-calendar-week {
+    display: grid;
+    grid-template-rows: repeat(7, minmax(12px, 1fr));
+    gap: 3px;
+    width: 100%;
+  }
+
+  .github-calendar-cell {
+    display: block;
+    width: 100%;
+    aspect-ratio: 1;
+    border-radius: 2px;
+    background: color-mix(in oklab, var(--border) 42%, transparent);
+  }
+
+  .github-calendar-cell.is-empty {
+    background: transparent;
+  }
+
+  .level-0 {
+    background: color-mix(in oklab, var(--border) 42%, transparent);
+  }
+
+  .level-1 {
+    background: color-mix(in oklab, var(--success) 18%, var(--surface-raised));
+  }
+
+  .level-2 {
+    background: color-mix(in oklab, var(--success) 34%, var(--surface-raised));
+  }
+
+  .level-3 {
+    background: color-mix(in oklab, var(--success) 54%, var(--surface-raised));
+  }
+
+  .level-4 {
+    background: var(--success);
+  }
+
+  @media (min-width: 900px) {
+    .github-calendar {
+      padding: var(--space-xl);
+    }
+
+    .github-calendar-grid {
+      gap: 8px;
+    }
+  }
+</style>

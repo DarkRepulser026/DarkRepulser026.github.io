@@ -1,0 +1,229 @@
+---
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import Link from '@/components/link.astro'
+import PageHead from '@/components/page-head.astro'
+import Layout from '@/layouts/layout.astro'
+import { Badge } from '@/components/ui/badge'
+import { Separator } from '@/components/ui/separator'
+
+const workItems = [
+  {
+    name: 'CRM Platform',
+    short: 'CRM',
+    summary:
+      'Full-stack customer service system with JWT token versioning, role-based access control, support tickets, and Flutter clients.',
+    period: 'NOV 2025 - DEC 2025',
+    site: 'github.com/DarkRepulser026/Simple-CRM-Platform',
+    href: 'https://github.com/DarkRepulser026/Simple-CRM-Platform',
+    tags: ['open-source', 'contract'],
+  },
+  {
+    name: 'E-Commerce Platform',
+    short: 'ECOM',
+    summary:
+      'Commerce stack built with .NET 9 MVC and PostgreSQL, including OTP verification and CRUD product management.',
+    period: 'JUN 2025',
+    site: 'github.com/DarkRepulser026/Simple-E-commerce-Platform',
+    href: 'https://github.com/DarkRepulser026/Simple-E-commerce-Platform',
+    tags: ['backend', 'mvc'],
+  },
+  {
+    name: 'Landing Page Builder',
+    short: 'LPB',
+    summary:
+      'PHP MVC generator for multi-industry landing pages with PDO protection and dynamic runtime styling controls.',
+    period: 'MAY 2025',
+    site: 'github.com/DarkRepulser026/LandingPage-Project',
+    href: 'https://github.com/DarkRepulser026/LandingPage-Project',
+    tags: ['php', 'templates'],
+  },
+]
+---
+
+<Layout class="max-w-5xl">
+  <PageHead slot="head" title="Work" />
+
+  <Breadcrumbs items={[{ label: 'Work', icon: 'lucide:briefcase' }]} />
+
+  <article class="work-shell">
+    <div class="work-header prose not-prose">
+      <h1 class="work-title">Some work I’ve done <span class="work-accent">⊂(•‿•)つ</span></h1>
+      <p class="work-updated">Last updated: 2026-02-26</p>
+    </div>
+
+    <section class="work-list" aria-label="Work register">
+      {workItems.map((item, index) => (
+        <div class="work-card work-card-reveal" style={`--card-index: ${index};`}>
+          <Link href={item.href} external class="work-card-link">
+            <div class="work-thumb" aria-hidden="true">
+              <span>{item.short}</span>
+            </div>
+            <div class="work-content">
+              <h2 class="work-name">{item.name}</h2>
+              <p class="work-summary">{item.summary}</p>
+              <div class="work-meta">
+                <span class="work-meta-item">{item.period}</span>
+                <Separator orientation="vertical" className="hidden h-4! sm:block" />
+                <span class="work-meta-item">{item.site}</span>
+              </div>
+              <div class="work-tags">
+                {item.tags.map((tag) => (
+                  <Badge variant="muted">{tag}</Badge>
+                ))}
+              </div>
+            </div>
+          </Link>
+        </div>
+      ))}
+    </section>
+  </article>
+</Layout>
+
+<style>
+  .work-shell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+    padding-top: var(--space-md);
+    padding-bottom: var(--space-3xl);
+  }
+
+  .work-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .work-title {
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text-display);
+  }
+
+  .work-accent {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8em;
+    letter-spacing: 0;
+  }
+
+  .work-updated {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .work-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .work-card {
+    border: 1px solid var(--border);
+    background: var(--surface);
+    padding: var(--space-md);
+    transition: border-color 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      background-color 220ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .work-card-reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: work-card-reveal 420ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: calc(120ms + (var(--card-index) * 80ms));
+  }
+
+  .work-card:hover {
+    background: color-mix(in oklab, var(--surface) 88%, var(--muted));
+    border-color: var(--border-visible);
+  }
+
+  .work-card-link {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .work-thumb {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 9;
+    border: 1px solid var(--border-visible);
+    background: var(--surface-raised);
+    color: var(--text-display);
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    letter-spacing: 0.14em;
+  }
+
+  .work-content {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .work-name {
+    font-size: 1.1rem;
+    color: var(--text-primary);
+  }
+
+  .work-summary {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .work-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-sm);
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .work-meta-item {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .work-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-xs);
+  }
+
+  @keyframes work-card-reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .work-card-link {
+      flex-direction: row;
+      align-items: stretch;
+    }
+
+    .work-thumb {
+      width: min(280px, 32%);
+      flex-shrink: 0;
+    }
+
+    .work-content {
+      flex: 1;
+      justify-content: center;
+    }
+  }
+</style>

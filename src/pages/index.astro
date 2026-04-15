@@ -1,0 +1,536 @@
+---
+import Link from '@/components/link.astro'
+import GitHubCalendar from '@/components/bento/GitHubCalendar.astro'
+import PageHead from '@/components/page-head.astro'
+import Layout from '@/layouts/layout.astro'
+
+const featuredRepos = [
+  {
+    name: 'CRM Platform',
+    description:
+      'Full-stack customer service system with JWT token versioning, role-based access control, support tickets, and Flutter clients.',
+    href: 'https://github.com/DarkRepulser026/Simple-CRM-Platform',
+    period: 'NOV 2025 - DEC 2025',
+    tag: 'FULL-STACK',
+  },
+  {
+    name: 'E-Commerce Platform',
+    description:
+      '.NET 9 MVC commerce stack with OTP verification, product CRUD, and PostgreSQL integration.',
+    href: 'https://github.com/DarkRepulser026/Simple-E-commerce-Platform',
+    period: 'JUN 2025',
+    tag: 'BACKEND',
+  },
+  {
+    name: 'Landing Page Builder',
+    description:
+      'PHP MVC generator for multi-industry landing pages with PDO protection and dynamic runtime styling controls.',
+    href: 'https://github.com/DarkRepulser026/LandingPage-Project',
+    period: 'MAY 2025',
+    tag: 'TEMPLATES',
+  },
+]
+
+const coreStack = [
+  { name: 'JavaScript', hours: 220 },
+  { name: 'Node.js', hours: 214 },
+  { name: 'C#', hours: 168 },
+  { name: '.NET', hours: 164 },
+  { name: 'PostgreSQL', hours: 150 },
+  { name: 'Java', hours: 148 },
+  { name: 'Dart', hours: 112 },
+]
+
+const maxCoreHours = Math.max(...coreStack.map((item) => item.hours))
+---
+
+<Layout class="max-w-5xl">
+  <PageHead slot="head" title="Portfolio" />
+
+  <section class="portfolio-shell">
+    <div class="portfolio-row row-hero">
+      <section class="panel reveal greeting-card" style="--delay: 0ms;">
+        <h1 class="hero-title">Hi, I'm Pham !</h1>
+        <p class="hero-summary">
+          <span>I’m passionate about building clean, efficient software and applying my academic knowledge in real-world development environments.</span>
+          <span>I enjoy solving challenging problems and learning new technologies.</span>
+          <span>You can read more about me <Link href="/about/" class="text-white underline decoration-white underline-offset-[3px]">here</Link>!</span>
+        </p>
+      </section>
+
+      <section class="panel reveal status-card" style="--delay: 80ms;">
+        <p class="ui-label">CURRENT STATUS</p>
+        <div class="status-meta">
+          <p><span>PROGRAM</span><strong>BS / INFORMATION TECHNOLOGY</strong></p>
+          <p><span>UNIVERSITY</span><strong>HUTECH UNIVERSITY</strong></p>
+          <p><span>TIMELINE</span><strong>SEPT 2022 - JUN 2026</strong></p>
+          <p><span>GPA</span><strong style="color: var(--success);">3.4 / 4.0</strong></p>
+        </div>
+      </section>
+    </div>
+
+    <div class="portfolio-row row-middle">
+      <section class="panel reveal stack-card" style="--delay: 120ms;">
+        <p class="ui-label">CORE STACK</p>
+        <ul class="stack-chart" role="list" aria-label="Core stack hours">
+          {
+            coreStack.map((item) => (
+              <li class="stack-row">
+                <span class="stack-name">{item.name}</span>
+                <div class="stack-track" aria-hidden="true">
+                  <span
+                    class="stack-fill"
+                    style={`--stack-ratio: ${item.hours / maxCoreHours};`}
+                  />
+                </div>
+                <span class="stack-hours">{item.hours}h</span>
+              </li>
+            ))
+          }
+        </ul>
+      </section>
+
+      <div class="reveal" style="--delay: 160ms;">
+        <GitHubCalendar />
+      </div>
+    </div>
+
+    <div class="portfolio-row row-repos">
+      <section class="panel reveal repos-card" style="--delay: 220ms;">
+        <div class="repos-head">
+          <div>
+            <p class="ui-label">REPOSITORIES</p>
+            <h2 class="repos-title">Selected builds from my GitHub.</h2>
+          </div>
+          <Link href="/work" class="pill-link repos-link">ALL WORK</Link>
+        </div>
+
+        <div class="repos-grid">
+          {
+            featuredRepos.map((repo) => (
+              <article class="repo-card">
+                <div class="repo-card-body">
+                  <div class="repo-card-top">
+                    <span class="repo-tag">{repo.tag}</span>
+                    <span class="repo-period">{repo.period}</span>
+                  </div>
+                  <h3 class="repo-name">{repo.name}</h3>
+                  <p class="repo-copy">{repo.description}</p>
+                </div>
+                <div class="repo-link-row">
+                  <Link href={repo.href} external class="repo-link">
+                    OPEN REPO
+                  </Link>
+                </div>
+              </article>
+            ))
+          }
+        </div>
+      </section>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .portfolio-shell {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-3xl);
+  }
+
+  .portfolio-shell::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background-image: radial-gradient(circle, var(--border) 1px, transparent 1px);
+    background-size: 16px 16px;
+    opacity: 0.14;
+  }
+
+  .portfolio-row {
+    display: grid;
+    gap: var(--space-md);
+  }
+
+  .row-hero,
+  .row-middle {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .row-repos {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .hero-title {
+    max-width: 16ch;
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+    color: var(--text-display);
+    margin-bottom: var(--space-md);
+  }
+
+  .hero-summary {
+    max-width: 56ch;
+    color: var(--text-secondary);
+    line-height: 1.65;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .hero-summary span {
+    display: block;
+  }
+
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .repos-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-md);
+  }
+
+  .repos-title {
+    margin-top: 2px;
+    font-size: 1.2rem;
+    line-height: 1.15;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .repos-link {
+    width: fit-content;
+  }
+
+  .repos-grid {
+    margin-top: var(--space-md);
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-md);
+  }
+
+  .repo-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    gap: var(--space-md);
+    border-top: 1px solid var(--border);
+    padding-top: var(--space-md);
+    min-height: 100%;
+  }
+
+  .repo-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .repo-card-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .repo-tag {
+    color: var(--text-display);
+  }
+
+  .repo-name {
+    font-size: 1.05rem;
+    color: var(--text-primary);
+  }
+
+  .repo-copy {
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .repo-link {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+
+  .repo-link-row {
+    margin-top: auto;
+  }
+
+  .repo-link:hover {
+    color: var(--text-display);
+  }
+
+  .hero-block {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .hero-number-wrap {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-lg);
+    align-items: end;
+  }
+
+  .hero-number {
+    font-family: 'Doto', 'Space Mono', monospace;
+    font-size: clamp(4.5rem, 18vw, 8rem);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+    color: var(--text-display);
+  }
+
+  .hero-title {
+    font-size: clamp(1.5rem, 2.8vw, 2.25rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    color: var(--text-primary);
+  }
+
+  .hero-summary {
+    max-width: 56ch;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .hero-meta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .hero-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-sm);
+  }
+
+  .status-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-sm);
+  }
+
+  .status-meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .status-meta p {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding: 12px 0;
+    border-top: 1px solid var(--border);
+  }
+
+  .status-meta span {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .status-meta strong {
+    color: var(--text-primary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-align: right;
+  }
+
+  .pill-link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 44px;
+    border: 1px solid var(--border-visible);
+    border-radius: 999px;
+    padding: 0 20px;
+    color: var(--text-primary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.76rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: border-color 220ms cubic-bezier(0.25, 0.1, 0.25, 1),
+      color 220ms cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+
+  .pill-link:hover {
+    border-color: var(--text-primary);
+    color: var(--text-display);
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-xl);
+  }
+
+  .panel {
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: var(--space-md);
+    background: var(--surface);
+  }
+
+  .greeting-card,
+  .status-card,
+  .stack-card,
+  .contact-card,
+  .repos-card {
+    min-height: 100%;
+  }
+
+  .side-column {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .compact-panel {
+    background: var(--surface-raised);
+  }
+
+  .stat-row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-sm);
+    padding: 10px 0;
+    border-top: 1px solid var(--border);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    color: var(--text-secondary);
+  }
+
+  .stat-row:first-of-type {
+    margin-top: var(--space-sm);
+  }
+
+  .stat-value {
+    color: var(--text-primary);
+    text-align: right;
+  }
+
+  .status-good {
+    color: var(--success);
+  }
+
+  .stack-chart {
+    margin-top: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stack-row {
+    display: grid;
+    grid-template-columns: minmax(74px, auto) 1fr auto;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .stack-name {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.67rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+
+  .stack-track {
+    position: relative;
+    height: 6px;
+    background: color-mix(in oklab, var(--border) 88%, transparent);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+
+  .stack-fill {
+    position: absolute;
+    inset: 0;
+    width: calc(var(--stack-ratio) * 100%);
+    background: var(--text-display);
+  }
+
+  .stack-hours {
+    color: var(--text-primary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.07em;
+  }
+
+  .tertiary-text {
+    margin-top: var(--space-sm);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+  }
+
+  .ui-label {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: reveal 420ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  @keyframes reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @media (min-width: 900px) {
+    .row-hero {
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+    }
+
+    .row-middle {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .repos-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .panel {
+      padding: var(--space-lg);
+    }
+  }
+</style>

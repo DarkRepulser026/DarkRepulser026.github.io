@@ -1,0 +1,178 @@
+---
+import AuthorCard from '@/components/author-card.astro'
+import Breadcrumbs from '@/components/breadcrumbs.astro'
+import BlogCard from '@/components/blog-card.astro'
+import Link from '@/components/link.astro'
+import PageHead from '@/components/page-head.astro'
+import Layout from '@/layouts/layout.astro'
+import { getAllAuthors, getPostsByAuthor } from '@/lib/data-utils'
+
+export async function getStaticPaths() {
+  const authors = await getAllAuthors()
+  return authors.map((author) => ({
+    params: { id: author.id },
+    props: { author },
+  }))
+}
+
+const { author } = Astro.props
+const authorPosts = await getPostsByAuthor(author.id)
+---
+
+<Layout class="max-w-5xl">
+  <PageHead
+    slot="head"
+    title={`${author.data.name} (Author)`}
+    description={author.data.bio || `Profile of ${author.data.name}.`}
+    noindex
+  />
+
+  <Breadcrumbs
+    items={[
+      { href: '/authors', label: 'Authors', icon: 'lucide:users' },
+      { label: author.data.name, icon: 'lucide:user' },
+    ]}
+  />
+
+  <section class="author-shell">
+    <header class="author-header prose not-prose">
+      <h1 class="author-title">{author.data.name} <span class="author-accent">(─‿‿─)</span></h1>
+      <p class="author-subtitle">{author.data.bio || 'No profile summary available.'}</p>
+      <p class="author-updated">
+        {author.data.pronouns ? `${author.data.pronouns} · ` : ''}
+        {authorPosts.filter((post) => !post.data.draft).length} POSTS
+      </p>
+    </header>
+
+    <div class="author-actions">
+      <Link href="/authors" class="author-back">[ BACK TO AUTHORS ]</Link>
+    </div>
+
+    <section class="author-card-wrap reveal" style="--delay: 120ms;">
+      <AuthorCard author={author} />
+    </section>
+
+    <section class="author-posts">
+      <h2 class="author-posts-title">Posts by {author.data.name}</h2>
+      {
+        authorPosts.length > 0 ? (
+          <ul class="author-posts-list">
+            {authorPosts
+              .filter((post) => !post.data.draft)
+              .map((post, index) => (
+                <li class="reveal" style={`--delay: ${180 + index * 80}ms;`}>
+                  <BlogCard entry={post} />
+                </li>
+              ))}
+          </ul>
+        ) : (
+          <p class="author-posts-empty">[ NO POSTS AVAILABLE FROM THIS AUTHOR ]</p>
+        )
+      }
+    </section>
+  </section>
+</Layout>
+
+<style>
+  .author-shell {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2xl);
+    padding-top: var(--space-md);
+    padding-bottom: var(--space-3xl);
+  }
+
+  .author-header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-xs);
+  }
+
+  .author-title {
+    margin-top: var(--space-xs);
+    font-size: clamp(2rem, 4.5vw, 3.2rem);
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    color: var(--text-display);
+  }
+
+  .author-accent {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.8em;
+    letter-spacing: 0;
+  }
+
+  .author-subtitle {
+    margin-top: var(--space-sm);
+    color: var(--text-secondary);
+    max-width: 64ch;
+    line-height: 1.65;
+  }
+
+  .author-updated {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .author-actions {
+    display: flex;
+    justify-content: flex-start;
+  }
+
+  .author-back {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    font-size: 0.72rem;
+  }
+
+  .author-back:hover {
+    color: var(--text-display);
+  }
+
+  .author-card-wrap {
+    margin-top: 0;
+  }
+
+  .author-posts {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .author-posts-title {
+    font-size: 1.3rem;
+    color: var(--text-primary);
+  }
+
+  .author-posts-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-md);
+  }
+
+  .author-posts-empty {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    letter-spacing: 0.08em;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(12px);
+    animation: reveal 420ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+    animation-delay: var(--delay, 0ms);
+  }
+
+  @keyframes reveal {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+</style>
