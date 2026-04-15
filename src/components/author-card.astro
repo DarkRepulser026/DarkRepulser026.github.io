@@ -11,7 +11,7 @@ interface Props {
 }
 
 const { author } = Astro.props
-const { name, avatar, bio, pronouns } = author.data
+const { name, role, avatar, bio, pronouns } = author.data
 const currentPath = Astro.url.pathname
 const isAuthorPage = currentPath === `/authors/${author.id}`
 
@@ -27,10 +27,10 @@ const socialLinks: SocialLink[] = [
 <div
   class="has-[a:hover]:bg-muted/50 w-full max-w-full overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
 >
-  <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
+  <div class="flex flex-col gap-4 sm:flex-row sm:items-stretch">
     <Link
       href={`/authors/${author.id}`}
-      class={cn('block', isAuthorPage && 'pointer-events-none')}
+      class={cn('block sm:self-start', isAuthorPage && 'pointer-events-none')}
     >
       <AvatarComponent
         client:load
@@ -44,7 +44,7 @@ const socialLinks: SocialLink[] = [
         )}
       />
     </Link>
-    <div class="flex min-w-0 flex-1 flex-col justify-between gap-y-4">
+    <div class="flex min-w-0 flex-1 flex-col gap-y-4 sm:min-h-32">
       <div>
         <div class="flex min-w-0 flex-wrap items-center gap-x-2">
           <h3 class="min-w-0 break-words text-lg font-medium">{name}</h3>
@@ -54,9 +54,24 @@ const socialLinks: SocialLink[] = [
             )
           }
         </div>
-        <p class="text-muted-foreground break-words text-sm">{bio}</p>
+        {role && <p class="author-role mt-2 break-words">{role}</p>}
+        <p class={cn('text-muted-foreground break-words text-sm', role ? 'mt-1.5' : 'mt-2')}>
+          {bio}
+        </p>
       </div>
-      <SocialIcons links={socialLinks} />
+      <div class="mt-auto">
+        <SocialIcons links={socialLinks} />
+      </div>
     </div>
   </div>
 </div>
+
+<style>
+  .author-role {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+</style>

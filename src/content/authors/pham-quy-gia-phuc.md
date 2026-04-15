@@ -1,6 +1,7 @@
 ---
 order: 1
 name: 'Pham Quy Gia Phuc'
+role: 'Full-Stack Developer'
 pronouns: 'he/him'
 avatar: '/static/dark.png'
 bio: 'Software engineering student focused on secure full-stack systems and practical product delivery.'

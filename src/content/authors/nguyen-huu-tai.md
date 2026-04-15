@@ -1,6 +1,7 @@
 ---
 order: 3
 name: 'Nguyen Huu Tai'
+role: 'Full-Stack Developer'
 pronouns: 'he/him'
 avatar: '/static/tai.png'
 bio: 'Software engineering student focused on building scalable web systems and continuously learning new technologies through real-world projects.'
