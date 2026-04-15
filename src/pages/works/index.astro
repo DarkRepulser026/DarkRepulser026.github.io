@@ -37,6 +37,10 @@ function toShortName(name: string) {
     .toUpperCase()
 }
 
+function normalizeName(name: string) {
+  return name.trim().toLowerCase()
+}
+
 function toSiteLabel(href: string) {
   try {
     const { host, pathname } = new URL(href)
@@ -47,6 +51,10 @@ function toSiteLabel(href: string) {
 }
 
 const projects = await getCollection('projects')
+const authors = await getCollection('authors')
+const authorMap = new Map(
+  authors.map((author) => [normalizeName(author.data.name), author]),
+)
 
 const workItems = projects
   .sort((a, b) => {
@@ -54,20 +62,33 @@ const workItems = projects
     const dateB = b.data.startDate?.getTime() || 0
     return dateB - dateA
   })
-  .map((project) => ({
-    id: project.id,
-    name: project.data.name,
-    short: toShortName(project.data.name),
-    summary: project.data.description,
-    period: formatPeriod(project.data.startDate, project.data.endDate),
-    site: toSiteLabel(project.data.link),
-    href: project.data.link,
-    image: project.data.image,
-    tags: project.data.tags,
-  }))
+  .map((project) => {
+    const credits = (project.data.credits ?? []).map((name, index) => {
+      const author = authorMap.get(normalizeName(name))
+      return {
+        name,
+        short: toShortName(name),
+        avatar: author?.data.avatar,
+        info: project.data.credits_info?.[index] || author?.data.role || '',
+      }
+    })
+
+    return {
+      id: project.id,
+      name: project.data.name,
+      short: toShortName(project.data.name),
+      summary: project.data.description,
+      period: formatPeriod(project.data.startDate, project.data.endDate),
+      site: toSiteLabel(project.data.link),
+      href: project.data.link,
+      image: project.data.image,
+      tags: project.data.tags,
+      credits,
+    }
+  })
 ---
 
-<Layout class="max-w-5xl">
+<Layout class="max-w-5xl !overflow-x-visible">
   <PageHead slot="head" title="Works" />
 
   <Breadcrumbs items={[{ label: 'Works', icon: 'lucide:briefcase' }]} />
@@ -75,7 +96,7 @@ const workItems = projects
   <article class="work-shell">
     <div class="work-header prose not-prose">
       <h1 class="work-title">Some works I’ve done <span class="work-accent">⊂(•‿•)つ</span></h1>
-      <p class="work-updated">Last updated: 2026-02-26</p>
+      <p class="work-updated">Last updated: 2026-04-15</p>
     </div>
 
     <section class="work-list" aria-label="Works register">
@@ -97,10 +118,39 @@ const workItems = projects
                 <Separator orientation="vertical" className="hidden h-4! sm:block" />
                 <span class="work-meta-item">{item.site}</span>
               </div>
-              <div class="work-tags">
-                {item.tags.map((tag) => (
-                  <Badge variant="muted">{tag}</Badge>
-                ))}
+              <div class="work-footer">
+                <div class="work-tags">
+                  {item.tags.map((tag) => (
+                    <Badge variant="muted">{tag}</Badge>
+                  ))}
+                </div>
+                {
+                  item.credits.length > 0 && (
+                    <div class="work-credits" aria-label="Credits">
+                      {item.credits.map((credit) => (
+                        <span class="work-credit" tabindex="0">
+                          <span class="work-credit-bubble">
+                            {credit.avatar ? (
+                              <img
+                                src={credit.avatar}
+                                alt={credit.name}
+                                class="work-credit-avatar"
+                                loading="lazy"
+                              />
+                            ) : (
+                              <span class="work-credit-avatar work-credit-fallback">
+                                {credit.short}
+                              </span>
+                            )}
+                          </span>
+                          <span class="work-credit-tooltip">
+                            {credit.info ? `${credit.name}: ${credit.info}` : credit.name}
+                          </span>
+                        </span>
+                      ))}
+                    </div>
+                  )
+                }
               </div>
             </div>
           </Link>
@@ -151,9 +201,13 @@ const workItems = projects
     display: flex;
     flex-direction: column;
     gap: var(--space-md);
+    isolation: isolate;
   }
 
   .work-card {
+    position: relative;
+    z-index: 0;
+    overflow: visible;
     border: 1px solid var(--border);
     background: var(--surface);
     padding: var(--space-md);
@@ -169,8 +223,13 @@ const workItems = projects
   }
 
   .work-card:hover {
+    z-index: 8;
     background: color-mix(in oklab, var(--surface) 88%, var(--muted));
     border-color: var(--border-visible);
+  }
+
+  .work-card:focus-within {
+    z-index: 10;
   }
 
   .work-card-link {
@@ -240,6 +299,113 @@ const workItems = projects
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-xs);
+  }
+
+  .work-footer {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: var(--space-sm);
+  }
+
+  .work-credits {
+    position: relative;
+    z-index: 12;
+    display: inline-flex;
+    align-items: center;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
+  .work-credit {
+    position: relative;
+    display: inline-flex;
+    width: 2rem;
+    height: 2rem;
+    margin-left: -0.35rem;
+    transition: transform 180ms ease;
+  }
+
+  .work-credit-bubble {
+    width: 100%;
+    height: 100%;
+    border-radius: 999px;
+    border: 1px solid var(--border-visible);
+    background: var(--surface-raised);
+    overflow: hidden;
+    display: inline-flex;
+  }
+
+  .work-credit:first-child {
+    margin-left: 0;
+  }
+
+  .work-credit:hover,
+  .work-credit:focus-visible {
+    transform: translateY(-2px);
+    z-index: 2;
+  }
+
+  .work-credit-avatar {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  .work-credit-fallback {
+    align-items: center;
+    justify-content: center;
+    font-family: 'Space Mono', monospace;
+    font-size: 0.52rem;
+    letter-spacing: 0.06em;
+    color: var(--text-primary);
+    padding: 0 0.2rem;
+    text-align: center;
+  }
+
+  .work-credit-tooltip {
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 0.45rem);
+    transform: translateX(-50%) translateY(4px);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border-visible);
+    background: var(--surface);
+    color: var(--text-primary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.62rem;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: opacity 150ms ease, transform 150ms ease;
+    z-index: 4;
+  }
+
+  .work-credit:hover .work-credit-tooltip,
+  .work-credit:focus-visible .work-credit-tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  @media (max-width: 520px) {
+    .work-footer {
+      align-items: flex-start;
+      flex-direction: column;
+    }
+
+    .work-credits {
+      align-self: flex-end;
+    }
+
+    .work-credit-tooltip {
+      white-space: normal;
+      width: max-content;
+      max-width: min(80vw, 16rem);
+      text-wrap: balance;
+    }
   }
 
   @keyframes work-card-reveal {

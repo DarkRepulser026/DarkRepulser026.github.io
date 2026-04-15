@@ -45,6 +45,9 @@ const projects = defineCollection({
     link: z.url(),
     startDate: z.coerce.date().optional(),
     endDate: z.coerce.date().optional(),
+    featuredRepos: z.boolean().optional(),
+    credits: z.array(z.string()).optional(),
+    credits_info: z.array(z.string()).optional(),
   }),
 })
 

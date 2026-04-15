@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">TinhNguyenXanh Node.js</title>
+  <desc id="desc">Project cover art for TinhNguyenXanh Node.js repository.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#eef9f1" />
+      <stop offset="100%" stop-color="#d8f0df" />
+    </linearGradient>
+    <linearGradient id="chip" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2a7f45" />
+      <stop offset="100%" stop-color="#1f5f34" />
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg)" />
+  <circle cx="1070" cy="120" r="180" fill="#c8e9d1" opacity="0.65" />
+  <circle cx="170" cy="560" r="220" fill="#b8e0c2" opacity="0.55" />
+
+  <g transform="translate(120 118)">
+    <rect width="960" height="440" rx="28" fill="#ffffff" stroke="#d3e8d9" stroke-width="4" />
+
+    <rect x="44" y="48" width="250" height="58" rx="14" fill="url(#chip)" />
+    <text x="70" y="86" font-family="Space Grotesk, Arial, sans-serif" font-size="28" font-weight="700" fill="#ffffff">NODE.JS APP</text>
+
+    <text x="44" y="180" font-family="Space Grotesk, Arial, sans-serif" font-size="58" font-weight="700" fill="#1c3324">TinhNguyenXanh</text>
+    <text x="44" y="240" font-family="Space Grotesk, Arial, sans-serif" font-size="42" font-weight="600" fill="#2d5b3d">Volunteer Platform</text>
+
+    <g transform="translate(44 290)">
+      <rect width="210" height="58" rx="12" fill="#edf7f0" stroke="#c7dfce" />
+      <text x="28" y="38" font-family="Space Mono, monospace" font-size="24" fill="#2d5b3d">events</text>
+
+      <rect x="228" width="210" height="58" rx="12" fill="#edf7f0" stroke="#c7dfce" />
+      <text x="256" y="38" font-family="Space Mono, monospace" font-size="24" fill="#2d5b3d">members</text>
+
+      <rect x="456" width="210" height="58" rx="12" fill="#edf7f0" stroke="#c7dfce" />
+      <text x="484" y="38" font-family="Space Mono, monospace" font-size="24" fill="#2d5b3d">reports</text>
+    </g>
+
+    <circle cx="872" cy="334" r="84" fill="#e4f3e8" stroke="#c7dfce" stroke-width="4" />
+    <path d="M845 352c27-2 53-20 61-45 1 23-12 44-34 58-19 12-43 17-62 14 6-11 17-22 35-27z" fill="#2a7f45" />
+    <path d="M866 296c-8 6-18 16-20 29 16-4 31-17 36-31-6 0-11 0-16 2z" fill="#1f5f34" />
+  </g>
+</svg>

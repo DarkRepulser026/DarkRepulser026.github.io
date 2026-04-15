@@ -3,33 +3,68 @@ import Link from '@/components/link.astro'
 import GitHubCalendar from '@/components/bento/GitHubCalendar.astro'
 import PageHead from '@/components/page-head.astro'
 import Layout from '@/layouts/layout.astro'
+import { getCollection } from 'astro:content'
 
-const featuredRepos = [
-  {
-    name: 'CRM Platform',
-    description:
-      'Full-stack customer service system with JWT token versioning, role-based access control, support tickets, and Flutter clients.',
-    href: 'https://github.com/DarkRepulser026/Simple-CRM-Platform',
-    period: 'NOV 2025 - DEC 2025',
-    tag: 'FULL-STACK',
-  },
-  {
-    name: 'E-Commerce Platform',
-    description:
-      '.NET 9 MVC commerce stack with OTP verification, product CRUD, and PostgreSQL integration.',
-    href: 'https://github.com/DarkRepulser026/Simple-E-commerce-Platform',
-    period: 'JUN 2025',
-    tag: 'BACKEND',
-  },
-  {
-    name: 'Landing Page Builder',
-    description:
-      'PHP MVC generator for multi-industry landing pages with PDO protection and dynamic runtime styling controls.',
-    href: 'https://github.com/DarkRepulser026/LandingPage-Project',
-    period: 'MAY 2025',
-    tag: 'TEMPLATES',
-  },
-]
+function formatPeriod(startDate?: Date, endDate?: Date) {
+  const formatMonthYear = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      year: 'numeric',
+    })
+      .format(date)
+      .toUpperCase()
+
+  if (startDate && endDate) {
+    return `${formatMonthYear(startDate)} - ${formatMonthYear(endDate)}`
+  }
+
+  if (startDate) {
+    return formatMonthYear(startDate)
+  }
+
+  return 'N/A'
+}
+
+function normalizeName(name: string) {
+  return name.trim().toLowerCase()
+}
+
+function getCreditRoleFor(
+  project: (typeof projects)[number],
+  personName: string,
+) {
+  const credits = project.data.credits ?? []
+  const index = credits.findIndex(
+    (name) => normalizeName(name) === normalizeName(personName),
+  )
+
+  if (index === -1) return 'Contributor'
+  return project.data.credits_info?.[index] || 'Contributor'
+}
+
+const projects = await getCollection('projects')
+const candidateFeaturedRepos = projects.filter(
+  (project) => project.data.featuredRepos === true,
+)
+
+const featuredRepos =
+  candidateFeaturedRepos.length > 3
+    ? candidateFeaturedRepos
+        .sort((a, b) => {
+          const dateA = (a.data.endDate ?? a.data.startDate)?.getTime() || 0
+          const dateB = (b.data.endDate ?? b.data.startDate)?.getTime() || 0
+          return dateB - dateA
+        })
+        .slice(0, 3)
+    : candidateFeaturedRepos
+
+const featuredRepoCards = featuredRepos.map((project) => ({
+  name: project.data.name,
+  description: project.data.description,
+  href: project.data.link,
+  period: formatPeriod(project.data.startDate, project.data.endDate),
+  role: getCreditRoleFor(project, 'Pham Quy Gia Phuc'),
+}))
 
 const coreStack = [
   { name: 'JavaScript', hours: 220 },
@@ -107,14 +142,14 @@ const maxCoreHours = Math.max(...coreStack.map((item) => item.hours))
 
         <div class="repos-grid">
           {
-            featuredRepos.map((repo) => (
+            featuredRepoCards.map((repo) => (
               <article class="repo-card">
                 <div class="repo-card-body">
-                  <div class="repo-card-top">
-                    <span class="repo-tag">{repo.tag}</span>
+                  <div class="repo-title-row">
+                    <h3 class="repo-name">{repo.name}</h3>
                     <span class="repo-period">{repo.period}</span>
                   </div>
-                  <h3 class="repo-name">{repo.name}</h3>
+                  <p class="repo-role">{repo.role}</p>
                   <p class="repo-copy">{repo.description}</p>
                 </div>
                 <div class="repo-link-row">
@@ -237,11 +272,14 @@ const maxCoreHours = Math.max(...coreStack.map((item) => item.hours))
     gap: var(--space-sm);
   }
 
-  .repo-card-top {
-    display: flex;
+  .repo-title-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-sm);
+  }
+
+  .repo-period {
     color: var(--text-secondary);
     font-family: 'Space Mono', monospace;
     font-size: 0.68rem;
@@ -249,13 +287,18 @@ const maxCoreHours = Math.max(...coreStack.map((item) => item.hours))
     text-transform: uppercase;
   }
 
-  .repo-tag {
-    color: var(--text-display);
-  }
-
   .repo-name {
     font-size: 1.05rem;
     color: var(--text-primary);
+    min-width: 0;
+  }
+
+  .repo-role {
+    color: var(--text-secondary);
+    font-family: 'Space Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
   .repo-copy {
