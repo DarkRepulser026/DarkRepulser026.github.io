@@ -20,6 +20,7 @@ const blog = defineCollection({
 const authors = defineCollection({
   loader: glob({ pattern: '**/*.{md,mdx}', base: './src/content/authors' }),
   schema: z.object({
+    order: z.number().optional(),
     name: z.string(),
     pronouns: z.string().optional(),
     avatar: z.url().or(z.string().startsWith('/')),

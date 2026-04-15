@@ -5,58 +5,89 @@ import PageHead from '@/components/page-head.astro'
 import Layout from '@/layouts/layout.astro'
 import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
+import { getCollection } from 'astro:content'
 
-const workItems = [
-  {
-    name: 'CRM Platform',
-    short: 'CRM',
-    summary:
-      'Full-stack customer service system with JWT token versioning, role-based access control, support tickets, and Flutter clients.',
-    period: 'NOV 2025 - DEC 2025',
-    site: 'github.com/DarkRepulser026/Simple-CRM-Platform',
-    href: 'https://github.com/DarkRepulser026/Simple-CRM-Platform',
-    tags: ['open-source', 'contract'],
-  },
-  {
-    name: 'E-Commerce Platform',
-    short: 'ECOM',
-    summary:
-      'Commerce stack built with .NET 9 MVC and PostgreSQL, including OTP verification and CRUD product management.',
-    period: 'JUN 2025',
-    site: 'github.com/DarkRepulser026/Simple-E-commerce-Platform',
-    href: 'https://github.com/DarkRepulser026/Simple-E-commerce-Platform',
-    tags: ['backend', 'mvc'],
-  },
-  {
-    name: 'Landing Page Builder',
-    short: 'LPB',
-    summary:
-      'PHP MVC generator for multi-industry landing pages with PDO protection and dynamic runtime styling controls.',
-    period: 'MAY 2025',
-    site: 'github.com/DarkRepulser026/LandingPage-Project',
-    href: 'https://github.com/DarkRepulser026/LandingPage-Project',
-    tags: ['php', 'templates'],
-  },
-]
+function formatPeriod(startDate?: Date, endDate?: Date) {
+  const formatMonthYear = (date: Date) =>
+    new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      year: 'numeric',
+    })
+      .format(date)
+      .toUpperCase()
+
+  if (startDate && endDate) {
+    return `${formatMonthYear(startDate)} - ${formatMonthYear(endDate)}`
+  }
+
+  if (startDate) {
+    return formatMonthYear(startDate)
+  }
+
+  return 'N/A'
+}
+
+function toShortName(name: string) {
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .map((part) => part[0])
+    .join('')
+    .slice(0, 4)
+    .toUpperCase()
+}
+
+function toSiteLabel(href: string) {
+  try {
+    const { host, pathname } = new URL(href)
+    return `${host}${pathname}`.replace(/\/$/, '')
+  } catch {
+    return href
+  }
+}
+
+const projects = await getCollection('projects')
+
+const workItems = projects
+  .sort((a, b) => {
+    const dateA = a.data.startDate?.getTime() || 0
+    const dateB = b.data.startDate?.getTime() || 0
+    return dateB - dateA
+  })
+  .map((project) => ({
+    id: project.id,
+    name: project.data.name,
+    short: toShortName(project.data.name),
+    summary: project.data.description,
+    period: formatPeriod(project.data.startDate, project.data.endDate),
+    site: toSiteLabel(project.data.link),
+    href: project.data.link,
+    image: project.data.image,
+    tags: project.data.tags,
+  }))
 ---
 
 <Layout class="max-w-5xl">
-  <PageHead slot="head" title="Work" />
+  <PageHead slot="head" title="Works" />
 
-  <Breadcrumbs items={[{ label: 'Work', icon: 'lucide:briefcase' }]} />
+  <Breadcrumbs items={[{ label: 'Works', icon: 'lucide:briefcase' }]} />
 
   <article class="work-shell">
     <div class="work-header prose not-prose">
-      <h1 class="work-title">Some work I’ve done <span class="work-accent">⊂(•‿•)つ</span></h1>
+      <h1 class="work-title">Some works I’ve done <span class="work-accent">⊂(•‿•)つ</span></h1>
       <p class="work-updated">Last updated: 2026-02-26</p>
     </div>
 
-    <section class="work-list" aria-label="Work register">
+    <section class="work-list" aria-label="Works register">
       {workItems.map((item, index) => (
         <div class="work-card work-card-reveal" style={`--card-index: ${index};`}>
-          <Link href={item.href} external class="work-card-link">
-            <div class="work-thumb" aria-hidden="true">
-              <span>{item.short}</span>
+          <Link href={`/works/${item.id}`} class="work-card-link">
+            <div class="work-thumb">
+              {item.image ? (
+                <img src={item.image} alt={item.name} class="work-thumb-image" loading="lazy" />
+              ) : (
+                <span>{item.short}</span>
+              )}
             </div>
             <div class="work-content">
               <h2 class="work-name">{item.name}</h2>
@@ -154,6 +185,7 @@ const workItems = [
     display: flex;
     align-items: center;
     justify-content: center;
+    overflow: hidden;
     aspect-ratio: 16 / 9;
     border: 1px solid var(--border-visible);
     background: var(--surface-raised);
@@ -161,6 +193,13 @@ const workItems = [
     font-family: 'Space Mono', monospace;
     font-size: 1.2rem;
     letter-spacing: 0.14em;
+  }
+
+  .work-thumb-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
   }
 
   .work-content {

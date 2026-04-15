@@ -1,8 +1,8 @@
 ---
-name: 'Project C'
-description: 'This is an example project description! You should replace this with a description of your own project.'
-tags: ['Framework A', 'Library B', 'Tool C', 'Resource D']
-image: '/static/logo.png'
-link: 'https://example.com'
-startDate: '2024-03-01'
+name: 'Landing Page Builder'
+description: 'PHP MVC generator for multi-industry landing pages with PDO protection and dynamic runtime styling controls.'
+tags: ['php', 'templates']
+image: '/static/projects/landing-page-builder.svg'
+link: 'https://github.com/DarkRepulser026/LandingPage-Project'
+startDate: '2025-05-01'
 ---

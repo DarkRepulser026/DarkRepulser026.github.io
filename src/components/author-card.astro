@@ -25,7 +25,7 @@ const socialLinks: SocialLink[] = [
 ---
 
 <div
-  class="has-[a:hover]:bg-muted/50 overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
+  class="has-[a:hover]:bg-muted/50 w-full max-w-full overflow-hidden rounded-xl border p-4 transition-colors duration-300 ease-in-out"
 >
   <div class="flex flex-col gap-4 sm:flex-row sm:items-start">
     <Link
@@ -46,15 +46,15 @@ const socialLinks: SocialLink[] = [
     </Link>
     <div class="flex min-w-0 flex-1 flex-col justify-between gap-y-4">
       <div>
-        <div class="flex flex-wrap items-center gap-x-2">
-          <h3 class="text-lg font-medium">{name}</h3>
+        <div class="flex min-w-0 flex-wrap items-center gap-x-2">
+          <h3 class="min-w-0 break-words text-lg font-medium">{name}</h3>
           {
             pronouns && (
               <span class="text-muted-foreground text-sm">({pronouns})</span>
             )
           }
         </div>
-        <p class="text-muted-foreground text-sm">{bio}</p>
+        <p class="text-muted-foreground break-words text-sm">{bio}</p>
       </div>
       <SocialIcons links={socialLinks} />
     </div>

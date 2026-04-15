@@ -2,7 +2,17 @@ import { getCollection, render, type CollectionEntry } from 'astro:content'
 import { readingTime, calculateWordCountFromHtml } from '@/lib/utils'
 
 export async function getAllAuthors(): Promise<CollectionEntry<'authors'>[]> {
-  return await getCollection('authors')
+  const authors = await getCollection('authors')
+  return authors.sort((a, b) => {
+    const orderA = a.data.order ?? Number.POSITIVE_INFINITY
+    const orderB = b.data.order ?? Number.POSITIVE_INFINITY
+
+    if (orderA !== orderB) {
+      return orderA - orderB
+    }
+
+    return a.data.name.localeCompare(b.data.name)
+  })
 }
 
 export async function getAllPosts(): Promise<CollectionEntry<'blog'>[]> {

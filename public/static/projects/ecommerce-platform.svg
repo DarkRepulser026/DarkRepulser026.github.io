@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="675" viewBox="0 0 1200 675" role="img" aria-labelledby="title desc">
+  <title id="title">E-Commerce Platform</title>
+  <desc id="desc">Vector artwork for an e-commerce dashboard and storefront.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#172554"/>
+      <stop offset="100%" stop-color="#1E1B4B"/>
+    </linearGradient>
+    <linearGradient id="cart" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#F59E0B"/>
+      <stop offset="100%" stop-color="#F97316"/>
+    </linearGradient>
+  </defs>
+
+  <rect width="1200" height="675" fill="url(#bg)" rx="28"/>
+
+  <rect x="84" y="84" width="1032" height="507" rx="24" fill="#0B1023" stroke="#312E81" stroke-width="2"/>
+
+  <rect x="140" y="150" width="916" height="78" rx="14" fill="#111827" stroke="#3730A3"/>
+  <rect x="176" y="182" width="230" height="12" rx="6" fill="#F59E0B"/>
+  <circle cx="974" cy="189" r="20" fill="url(#cart)"/>
+  <circle cx="1026" cy="189" r="20" fill="#312E81"/>
+
+  <rect x="140" y="258" width="290" height="292" rx="16" fill="#111827" stroke="#3730A3"/>
+  <rect x="174" y="292" width="220" height="142" rx="12" fill="#1F2937"/>
+  <rect x="174" y="458" width="160" height="12" rx="6" fill="#FCD34D"/>
+  <rect x="174" y="482" width="120" height="10" rx="5" fill="#64748B"/>
+
+  <rect x="462" y="258" width="594" height="292" rx="16" fill="#111827" stroke="#3730A3"/>
+  <rect x="498" y="298" width="522" height="14" rx="7" fill="#C4B5FD"/>
+  <rect x="498" y="328" width="390" height="10" rx="5" fill="#64748B"/>
+  <rect x="498" y="366" width="470" height="10" rx="5" fill="#64748B"/>
+  <rect x="498" y="404" width="230" height="12" rx="6" fill="#F59E0B"/>
+
+  <text x="150" y="106" fill="#E0E7FF" font-family="Space Mono, monospace" font-size="34" font-weight="700" letter-spacing="3">E-COMMERCE PLATFORM</text>
+</svg>

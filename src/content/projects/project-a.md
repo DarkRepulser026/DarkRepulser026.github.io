@@ -1,9 +1,9 @@
 ---
-name: 'Project A'
-description: 'This is an example project description! You should replace this with a description of your own project.'
-tags: ['Framework A', 'Library B', 'Tool C', 'Resource D']
-image: '/static/logo.png'
-link: 'https://example.com'
-startDate: '2024-01-01'
-endDate: '2024-02-01'
+name: 'CRM Platform'
+description: 'Full-stack customer service system with JWT token versioning, role-based access control, support tickets, and Flutter clients.'
+tags: ['open-source', 'contract']
+image: '/static/projects/crm-platform.svg'
+link: 'https://github.com/DarkRepulser026/Simple-CRM-Platform'
+startDate: '2025-11-01'
+endDate: '2025-12-01'
 ---
